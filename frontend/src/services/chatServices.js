@@ -28,6 +28,10 @@ const makeGeminiRequest = async (prompt, context = null, expert) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Allow-Credentials': 'true',
       },
       body: JSON.stringify(payload)
     });
