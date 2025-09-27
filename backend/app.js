@@ -25,9 +25,6 @@ app.use(helmet());
 
 // Robust CORS configuration that supports multiple origins and normalizes env values
 const allowedOriginsFromEnv = [
-  process.env.FRONTEND_URL,
-  process.env.FRONTEND_URL_2,
-  process.env.FRONTEND_URL_3,
   'http://localhost:3000',
   'https://finance-u.vercel.app'
 ].filter(Boolean);
