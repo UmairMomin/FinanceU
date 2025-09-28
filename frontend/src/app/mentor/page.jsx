@@ -1097,7 +1097,6 @@
 //   )
 // }
 
-
 'use client'
  
 import { useEffect, useState, useRef } from 'react'
@@ -1119,9 +1118,14 @@ import {
 } from '@mui/icons-material'
 import { SunIcon, MoonIcon } from '@heroicons/react/24/outline'
 import { LogOut } from 'lucide-react'
+import { useTheme } from '../../contexts/ThemeContext'
+import Link from 'next/link'
+import { logout } from '../../services/authServices'
+import { usePathname } from 'next/navigation'
  
 export default function MentorPage() {
-  const [theme, setTheme] = useState('light')
+  const { theme, toggleTheme } = useTheme()
+  const pathname = usePathname()
   const [messages, setMessages] = useState([
     {
       id: 'welcome',
@@ -1320,12 +1324,8 @@ export default function MentorPage() {
     { icon: LightbulbIcon, text: "How do I start budgeting?", category: "Budgeting" }
   ]
 
-  const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light')
-  }
-
   const isActive = (path) => {
-    return window.location.pathname === path
+    return pathname === path
   }
 
   useEffect(() => {
@@ -1430,56 +1430,92 @@ Would you like me to elaborate on any of these points?`,
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 pb-12">
         {/* Header */}
         <motion.div
-          initial={{ y: -100 }}
-          animate={{ y: 0 }}
-          transition={{ type: 'spring', stiffness: 100 }}
-        >
-          <header className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
-            <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <motion.div
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.5 }}
-                  className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center"
-                >
-                  <span className="text-white font-bold text-sm">F</span>
-                </motion.div>
-                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  FinanceU
-                </span>
-              </div>
-             
-              <nav className="flex items-center gap-6">
-                <a href="/dashboard" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                  Dashboard
-                </a>
-                <a href="/budget-planner" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                  Budget
-                </a>
-                <a href="/goals" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                  Goals
-                </a>
-                <a href="/mentor" className="text-blue-600 dark:text-blue-400 font-medium">
-                  AI Mentor
-                </a>
-                <button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 flex items-center gap-2">
-                  <LogOut size={16} />
-                </button>
-                <button
-                  onClick={toggleTheme}
-                  className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                  aria-label="Toggle theme"
-                >
-                  {theme === 'light' ? (
-                    <MoonIcon className="h-5 w-5 text-gray-700 dark:text-gray-300" />
-                  ) : (
-                    <SunIcon className="h-5 w-5 text-gray-700 dark:text-gray-300" />
-                  )}
-                </button>
-              </nav>
-            </div>
-          </header>
-        </motion.div>
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ type: "spring", stiffness: 100 }}
+    >
+      <header className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+          <Link href="/dashboard" className="flex items-center gap-2 no-underline">
+            <motion.div
+              whileHover={{ rotate: 360 }}
+              transition={{ duration: 0.5 }}
+              className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center"
+            >
+              <span className="text-white font-bold text-sm">F</span>
+            </motion.div>
+            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              FinanceU
+            </span>
+          </Link>
+          
+          <nav className="flex items-center gap-6">
+            <Link 
+              href="/dashboard" 
+              className={`${isActive('/dashboard') ? 
+                'text-blue-600 dark:text-blue-400 font-medium' : 
+                'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+              } transition-colors no-underline`}
+            >
+              Dashboard
+            </Link>
+            <Link 
+              href="/budget-planner" 
+              className={`${isActive('/budget-planner') ? 
+                'text-blue-600 dark:text-blue-400 font-medium' : 
+                'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+              } transition-colors no-underline`}
+            >
+              Budget
+            </Link>
+            <Link 
+              href="/goals" 
+              className={`${isActive('/goals') ? 
+                'text-blue-600 dark:text-blue-400 font-medium' : 
+                'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+              } transition-colors no-underline`}
+            >
+              Goals
+            </Link>
+            <Link 
+              href="/qna" 
+              className={`${isActive('/qna') ? 
+                'text-blue-600 dark:text-blue-400 font-medium' : 
+                'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+              } transition-colors no-underline`}
+            >
+              Q&A
+            </Link>
+            <Link 
+              href="/mentor" 
+              className={`${isActive('/mentor') ? 
+                'text-blue-600 dark:text-blue-400 font-medium' : 
+                'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+              } transition-colors no-underline`}
+            >
+              AI Mentor
+            </Link>
+            <button 
+              onClick={logout} 
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105"
+            >
+              <LogOut size={20} />
+            </button>
+            <button 
+              onClick={toggleTheme}
+              className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              aria-label="Toggle theme"
+            >
+              {theme === 'light' ? (
+                <MoonIcon className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+              ) : (
+                <SunIcon className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+              )}
+            </button>
+          </nav>
+        </div>
+      </header>
+    </motion.div>
 
         <div className="max-w-4xl mx-auto px-4 py-6">
           {/* Title */}
@@ -1731,20 +1767,12 @@ Would you like me to elaborate on any of these points?`,
               </button>
             </div>
             
-            <div className="flex justify-between items-center text-sm pt-1">
+            <div className="flex justify-between items-center text-sm">
               <div className="text-gray-500 dark:text-gray-400">
                 💡 Tip: Ask specific questions like "How much should I save for an emergency fund?" for better advice
               </div>
               {speechSupported && (
-                // <div className="text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                //   <MicIcon className="w-2 h-2" />
-                //   <p className="text-sm text-gray-500 dark:text-gray-400">
-                //     {isListening ? 'Listening...' : 'Click mic to speak'}
-                //   </p>
-                  
-                // </div>
-
-                <div className="text-gray-500 dark:text-gray-400 flex items-center gap-1 ">
+                <div className="text-gray-500 dark:text-gray-400 flex items-center gap-1">
                   <MicIcon className="w-1.5 h-1.5" style={{ fontSize: '1rem' }} />
                   <p className="text-xs text-gray-500 dark:text-gray-400">
                     {isListening ? 'Listening...' : 'Click mic to speak'}
